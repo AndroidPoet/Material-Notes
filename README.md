@@ -3,7 +3,7 @@
 
 
 <p align="center">  
-Note taking app using MVVVM architecture with Hilt, Material Motion, Coroutines, Flow, Jetpack (Room, ViewModel).
+Note taking app using MVVM architecture with Hilt, Material Motion, Coroutines, Flow, Jetpack (Room, ViewModel).
 </p>
 </br>
 

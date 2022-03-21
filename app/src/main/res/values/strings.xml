@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Material Notes</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="add_note">Add Note</string>
+    <string name="retry">Retry</string>
+    <string name="note">Note</string>
+    <string name="title">Title</string>
+
+
+</resources>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.androidpoet.materialnotes.ui.home.NotesFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_addnote_fragment"
+            app:destination="@id/addnote_fragment" />
+
+        <action
+            android:id="@+id/action_navigation_home_to_detail_fragment"
+            app:destination="@id/navigation_detail" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_detail"
+        android:name="com.androidpoet.materialnotes.ui.detail.NoteDetailFragment"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_details" >
+        <argument
+            android:name="note"
+            app:argType="com.androidpoet.materialnotes.model.Note" />
+
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/addnote_fragment"
+        android:name="com.androidpoet.materialnotes.ui.addnote.AddNoteFragment"
+        tools:layout="@layout/add_note_fragment"/>
+
+
+</navigation>

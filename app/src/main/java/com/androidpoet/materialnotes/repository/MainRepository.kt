@@ -27,7 +27,7 @@ class MainRepository @Inject constructor(
 ) {
 
     val getAllNotes = Pager(
-        config = PagingConfig(pageSize = 10),
+        config = PagingConfig(pageSize = 5),
         pagingSourceFactory = { notesDao.getNotesList() }
     ).flow
 

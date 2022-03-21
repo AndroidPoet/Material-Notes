@@ -1,11 +1,11 @@
 /*
- * Designed and developed by 2020 skydoves (Jaewoong Eum)
+ * Designed and developed by 2022 AndroidPoet (Ranbir Singh)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,11 +28,11 @@ import dagger.hilt.android.scopes.ViewModelScoped
 @InstallIn(ViewModelComponent::class)
 object RepositoryModule {
 
-  @Provides
-  @ViewModelScoped
-  fun provideMainRepository(
-    notesDao: NotesDao
-  ): MainRepository {
-    return MainRepository(notesDao)
-  }
+    @Provides
+    @ViewModelScoped
+    fun provideMainRepository(
+        notesDao: NotesDao
+    ): MainRepository {
+        return MainRepository(notesDao)
+    }
 }

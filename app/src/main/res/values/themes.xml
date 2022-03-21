@@ -1,4 +1,3 @@
-
 <!--
   ~ Designed and developed by 2022 AndroidPoet (Ranbir Singh)
   ~
@@ -15,9 +14,7 @@
   ~ limitations under the License.
   -->
 
-
-
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.MaterialNotes" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->

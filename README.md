@@ -7,6 +7,10 @@ Note taking app using MVVVM architecture with Hilt, Material Motion, Coroutines,
 </p>
 </br>
 
+<p align="center">
+<img src="https://user-images.githubusercontent.com/13647384/159276936-70f931ba-e6d8-475a-a52a-6ab99a62e867.jpg" width="25%"/>
+
+</p>
 
 ## Tech stack & Open-source libraries
 - Minimum SDK level 21
@@ -19,7 +23,6 @@ Note taking app using MVVVM architecture with Hilt, Material Motion, Coroutines,
   - Room Persistence - Constructs Database by providing an abstraction layer over SQLite to allow fluent database access.
 - Architecture
   - MVVM Architecture (View - DataBinding - ViewModel - Model)
-
   - Repository Pattern
 - [Timber](https://github.com/JakeWharton/timber) - A logger with a small, extensible API.
 - [Material-Components](https://github.com/material-components/material-components-android) - Material design components for building ripple animation, and CardView.

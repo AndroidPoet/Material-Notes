@@ -21,11 +21,14 @@ package com.androidpoet.materialnotes
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.Window
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.navigation.FloatingWindow
 import com.androidpoet.materialnotes.databinding.ActivityMainBinding
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -38,6 +41,11 @@ class MainActivity : AppCompatActivity() {
 
     binding = ActivityMainBinding.inflate(layoutInflater)
     setContentView(binding.root)
+
+    FloatingActionButton
+
+
+    window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
 
     if (Build.VERSION.SDK_INT >= 30) {
 

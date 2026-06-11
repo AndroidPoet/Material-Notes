@@ -10,7 +10,6 @@ metro = "1.1.0"
 lifecycle = "2.10.0"
 nav3 = "1.1.0"
 serialization = "1.9.0"
-napier = "2.7.1"
 
 android-compileSdk = "36"
 android-minSdk = "24"
@@ -37,8 +36,6 @@ lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecyc
 lifecycle-viewmodel-navigation3 = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycle" }
 
 nav3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "nav3" }
-
-napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

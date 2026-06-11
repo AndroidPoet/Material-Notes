@@ -306,6 +306,7 @@
 					"$(inherited)",
 					"-framework",
 					ComposeApp,
+					"-lsqlite3",
 				);
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = "$(TEAM_ID)";
@@ -337,6 +338,7 @@
 					"$(inherited)",
 					"-framework",
 					ComposeApp,
+					"-lsqlite3",
 				);
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = "$(TEAM_ID)";

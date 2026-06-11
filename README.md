@@ -4,17 +4,18 @@
   <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"/></a>
   <a href="https://android-arsenal.com/api?level=24"><img alt="API" src="https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat"/></a>
   <img alt="Platform" src="https://img.shields.io/badge/Platform-Android%20%7C%20iOS%20%7C%20Desktop-brightgreen.svg"/> <br>
-  <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-2.1.21-blueviolet.svg?logo=kotlin"/>
-  <img alt="Compose Multiplatform" src="https://img.shields.io/badge/Compose%20Multiplatform-1.7.3-blue.svg"/>
+  <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-2.3.10-blueviolet.svg?logo=kotlin"/>
+  <img alt="Compose Multiplatform" src="https://img.shields.io/badge/Compose%20Multiplatform-1.10.3-blue.svg"/>
+  <img alt="Navigation 3" src="https://img.shields.io/badge/Navigation-3-blue.svg"/>
   <img alt="DI" src="https://img.shields.io/badge/DI-Metro-orange.svg"/>
 </p>
 
 <p align="center">
-📝 Material Notes is a clean, Material 3 note-taking app built with Compose Multiplatform — running on Android, iOS, and Desktop from a single shared codebase, with Room, Metro DI, Coroutines, Flow, and a card-to-detail shared-element transition based on MVVM architecture.
+📝 Material Notes is a clean, Material 3 note-taking app built with Compose Multiplatform — running on Android, iOS, and Desktop from a single shared, multi-module codebase, with Navigation 3, SQLDelight, Metro DI, Coroutines, Flow, and a card-to-detail shared-element transition based on MVVM architecture.
 </p>
 
 > [!TIP]
-> The entire UI and logic live in `commonMain` — the same Compose code runs natively on Android, iOS, and Desktop (JVM).
+> The same Compose UI and logic run natively on Android, iOS, and Desktop (JVM) — split across `:core` and `:feature` Kotlin Multiplatform modules.
 
 <img src="art/demo.gif" align="right" width="300"/>
 
@@ -33,47 +34,50 @@
 - Compose Multiplatform Libraries:
   - [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/) — declarative UI + Material 3.
   - Lifecycle & ViewModel — `org.jetbrains.androidx.lifecycle` (multiplatform).
-  - Navigation — `org.jetbrains.androidx.navigation` (Navigation-Compose).
-  - [Room KMP](https://developer.android.com/kotlin/multiplatform/room) — local persistence with the bundled SQLite driver.
-- [Metro](https://github.com/ZacSweers/metro) — compile-time dependency injection (a Kotlin compiler plugin).
+  - [Navigation 3](https://developer.android.com/guide/navigation/navigation-3) — `NavDisplay` + `entryProvider` with type-safe `NavKey` routes and entry-scoped ViewModels (`org.jetbrains.androidx.navigation3`).
+  - [SQLDelight](https://github.com/cashapp/sqldelight) — typesafe SQL with platform drivers (Android / native / JDBC).
+- [Metro](https://github.com/ZacSweers/metro) — compile-time dependency injection (a Kotlin compiler plugin), wired across modules.
 - Architecture:
-  - MVVM Architecture (View → ViewModel → Repository → DAO).
+  - MVVM Architecture (View → ViewModel → Repository → SQLDelight queries).
   - Repository Pattern.
+  - Multi-module: `:core:data`, `:core:designsystem`, `:feature:*`, `:composeApp`.
 - [kotlinx-datetime](https://github.com/Kotlin/kotlinx-datetime) — multiplatform date/time formatting.
-- [Napier](https://github.com/AAkira/Napier) — multiplatform logging.
-- [KSP](https://github.com/google/ksp) — Room code generation per target.
-- **Shared-element transition** — `SharedTransitionLayout` + `sharedBounds` morph the note card into the detail screen.
+- **Shared-element transition** — `SharedTransitionLayout` + `sharedBounds` morph the note card into the detail screen (the `AnimatedVisibilityScope` comes from Nav3's `LocalNavAnimatedContentScope`).
 
 ## Architecture
 
-Material Notes follows MVVM and a single-module, source-set-based structure. All shared code lives in
-`commonMain`; each platform only supplies a thin entry point and a Room database builder.
+Material Notes follows MVVM across a **multi-module** Kotlin Multiplatform setup. Each module targets
+Android, Desktop (JVM), and iOS; the app shell assembles them and the Metro graph wires dependencies
+across module boundaries at compile time.
 
 ```
-composeApp/src/
-├── commonMain/   # ALL shared code: data, DI graph, ViewModels, Compose UI, navigation
-├── androidMain/  # MainActivity, Application, Android Room builder
-├── iosMain/      # MainViewController (ComposeUIViewController), iOS Room builder
-└── desktopMain/  # Desktop main(), desktop Room builder
-iosApp/           # Xcode project (SwiftUI shell hosting the Compose UI)
+:composeApp          # App shell: App, AppNavHost (Nav3), Metro AppGraph, platform entry points
+:core:data           # Note, MainRepository, SQLDelight schema + drivers (Android / native / JDBC)
+:core:designsystem   # Theme, palette, icons, shared-element helpers, date util
+:feature:home        # HomeScreen + NotesViewModel
+:feature:addnote     # AddNoteScreen + AddNoteViewModel
+:feature:detail      # NoteDetailScreen + NoteDetailViewModel
+iosApp/              # Xcode project (SwiftUI shell hosting the Compose UI)
 ```
 
-The one per-platform seam is the Room database builder (`di/Platform.*.kt`): each platform supplies a
-`RoomDatabase.Builder<AppDatabase>` (Android needs a `Context`; iOS/Desktop use a file path). Each entry
-point builds the Metro dependency graph via `buildAppGraph(builder, ioDispatcher)` and hands it to `App()`.
-Because Metro validates the graph at compile time, a wiring mistake fails the build instead of crashing at runtime.
+Dependencies flow one way — `:composeApp → :feature:* → :core:*` — so the graph stays acyclic. Feature
+screens receive their ViewModel as a parameter; `AppNavHost` (which can see both the Metro graph and the
+screens) creates each entry-scoped ViewModel and passes it down. Each platform supplies a SQLDelight
+`SqlDriver` (`:core:data/.../DatabaseDriver.*.kt`) into `buildAppGraph(driver, ioDispatcher)`. Because Metro
+validates the graph at compile time, a wiring mistake fails the build instead of crashing at runtime.
 
 ### Version matrix
 
-Kotlin 2.1.21 · Compose Multiplatform 1.7.3 · AGP 8.7.3 · Room 2.7.1 · Metro 0.3.8 ·
-Navigation-Compose 2.8.0-alpha10 · Lifecycle (JB) 2.8.4 · Gradle 8.11.1 (see `gradle/libs.versions.toml`).
+Kotlin 2.3.10 · Compose Multiplatform 1.10.3 · Navigation 3 1.1.0 · AGP 8.11.1 · SQLDelight 2.3.2 ·
+Metro 1.1.0 · Lifecycle (JB) 2.10.0 · Gradle 8.14 · JDK 21 (see `gradle/libs.versions.toml`).
 
 > [!NOTE]
-> **Version alignment matters.** Navigation-Compose `2.8.0-alpha13` transitively pulls Compose runtime
-> `1.8.0-alpha03`, which conflicts with CMP 1.7.3 `material3`/`foundation` and causes a Kotlin/Native
-> `IrLinkageError` at runtime on iOS (JVM/desktop tolerates it). Pin navigation to `2.8.0-alpha10` so the
-> whole tree resolves to one Compose version. iOS also requires
-> `CADisableMinimumFrameDurationOnPhone=true` in `iosApp/iosApp/Info.plist`.
+> **Toolchain notes.** Metro 1.1.0's Gradle plugin pins the Kotlin Gradle plugin to 2.3.x and requires
+> **JDK 21** + Gradle 8.13+ — `gradle/gradle-daemon-jvm.properties` selects the JDK 21 toolchain
+> automatically. On iOS, SQLDelight's native driver (SQLiter) needs the app to link `-lsqlite3`
+> (in `OTHER_LDFLAGS`), and `CADisableMinimumFrameDurationOnPhone=true` must be set in
+> `iosApp/iosApp/Info.plist`. `material-icons-extended` is no longer published for CMP 1.8+, so the few
+> icons used are hand-authored `ImageVector`s.
 
 ## Find this repository useful? :heart:
 Support it by joining __[stargazers](https://github.com/AndroidPoet/Material-Notes/stargazers)__ for this repository. :star: <br>

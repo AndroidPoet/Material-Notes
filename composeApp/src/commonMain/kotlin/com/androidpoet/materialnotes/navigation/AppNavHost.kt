@@ -13,6 +13,9 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.androidpoet.materialnotes.designsystem.LocalSharedTransitionScope
+import com.androidpoet.materialnotes.designsystem.rememberViewModel
+import com.androidpoet.materialnotes.di.LocalAppGraph
 import com.androidpoet.materialnotes.ui.addnote.AddNoteScreen
 import com.androidpoet.materialnotes.ui.detail.NoteDetailScreen
 import com.androidpoet.materialnotes.ui.home.HomeScreen
@@ -30,6 +33,7 @@ data class DetailRoute(val noteId: Int) : NavKey
 
 @Composable
 fun AppNavHost() {
+    val graph = LocalAppGraph.current
     val backStack = remember { mutableStateListOf<NavKey>(HomeRoute) }
 
     SharedTransitionLayout {
@@ -38,7 +42,7 @@ fun AppNavHost() {
                 backStack = backStack,
                 onBack = { backStack.removeLastOrNull() },
                 // SaveableStateHolder preserves each entry's UI state; ViewModelStore scopes a fresh
-                // ViewModelStoreOwner per entry so `viewModel()` returns an entry-scoped instance.
+                // ViewModelStoreOwner per entry so each `viewModel()` is entry-scoped.
                 entryDecorators = listOf(
                     rememberSaveableStateHolderNavEntryDecorator(),
                     rememberViewModelStoreNavEntryDecorator(),
@@ -46,16 +50,23 @@ fun AppNavHost() {
                 entryProvider = entryProvider {
                     entry<HomeRoute> {
                         HomeScreen(
+                            viewModel = rememberViewModel { graph.notesViewModel },
                             onAddNote = { backStack.add(AddNoteRoute) },
                             onNoteClick = { backStack.add(DetailRoute(it.id)) },
                         )
                     }
                     entry<AddNoteRoute> {
-                        AddNoteScreen(onBack = { backStack.removeLastOrNull() })
+                        AddNoteScreen(
+                            viewModel = rememberViewModel { graph.addNoteViewModel },
+                            onBack = { backStack.removeLastOrNull() },
+                        )
                     }
                     entry<DetailRoute> { key ->
                         NoteDetailScreen(
                             noteId = key.noteId,
+                            viewModel = rememberViewModel(key = "note_${key.noteId}") {
+                                graph.noteDetailViewModelFactory.create(key.noteId)
+                            },
                             onBack = { backStack.removeLastOrNull() },
                         )
                     }

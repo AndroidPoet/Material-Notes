@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinSerialization)
-    alias(libs.plugins.sqldelight)
     alias(libs.plugins.metro)
 }
 
@@ -39,9 +38,14 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.kotlinx.coroutines.android)
-            implementation(libs.sqldelight.android.driver)
         }
         commonMain.dependencies {
+            implementation(projects.core.data)
+            implementation(projects.core.designsystem)
+            implementation(projects.feature.home)
+            implementation(projects.feature.addnote)
+            implementation(projects.feature.detail)
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -50,11 +54,10 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
 
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.serialization.json)
 
+            // SqlDriver type referenced by the Metro graph factory.
             implementation(libs.sqldelight.runtime)
-            implementation(libs.sqldelight.coroutines.extensions)
 
             implementation(libs.lifecycle.viewmodel)
             implementation(libs.lifecycle.viewmodel.compose)
@@ -62,19 +65,13 @@ kotlin {
             implementation(libs.lifecycle.viewmodel.navigation3)
 
             implementation(libs.nav3.ui)
-
-            implementation(libs.napier)
         }
         commonTest.dependencies {
             implementation(kotlin("test"))
         }
-        iosMain.dependencies {
-            implementation(libs.sqldelight.native.driver)
-        }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
-            implementation(libs.sqldelight.sqlite.driver)
         }
     }
 }
@@ -108,14 +105,6 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
-}
-
-sqldelight {
-    databases {
-        create("NotesDatabase") {
-            packageName.set("com.androidpoet.materialnotes.db")
-        }
-    }
 }
 
 compose.desktop {

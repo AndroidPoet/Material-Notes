@@ -2,7 +2,7 @@ package com.androidpoet.materialnotes
 
 import android.app.Application
 import com.androidpoet.materialnotes.di.AppGraph
-import com.androidpoet.materialnotes.di.androidDatabaseDriver
+import com.androidpoet.materialnotes.data.androidDatabaseDriver
 import com.androidpoet.materialnotes.di.buildAppGraph
 import kotlinx.coroutines.Dispatchers
 

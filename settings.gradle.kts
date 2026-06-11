@@ -29,3 +29,8 @@ dependencyResolutionManagement {
 }
 
 include(":composeApp")
+include(":core:data")
+include(":core:designsystem")
+include(":feature:home")
+include(":feature:addnote")
+include(":feature:detail")

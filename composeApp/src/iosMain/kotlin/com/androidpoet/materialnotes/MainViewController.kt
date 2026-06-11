@@ -2,7 +2,7 @@ package com.androidpoet.materialnotes
 
 import androidx.compose.ui.window.ComposeUIViewController
 import com.androidpoet.materialnotes.di.buildAppGraph
-import com.androidpoet.materialnotes.di.iosDatabaseDriver
+import com.androidpoet.materialnotes.data.iosDatabaseDriver
 import kotlinx.coroutines.Dispatchers
 import platform.UIKit.UIViewController
 

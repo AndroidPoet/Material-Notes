@@ -14,10 +14,12 @@
 📝 Material Notes is a clean, Material 3 note-taking app built with Compose Multiplatform — running on Android, iOS, and Desktop from a single shared, multi-module codebase, with Navigation 3, SQLDelight, Metro DI, Coroutines, Flow, and a card-to-detail shared-element transition based on MVVM architecture.
 </p>
 
+<p align="center">
+  <img src="art/demo.gif" alt="Material Notes demo" width="300"/>
+</p>
+
 > [!TIP]
 > The same Compose UI and logic run natively on Android, iOS, and Desktop (JVM) — split across `:core` and `:feature` Kotlin Multiplatform modules.
-
-<img src="art/demo.gif" align="right" width="300"/>
 
 ## Running
 

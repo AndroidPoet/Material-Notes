@@ -18,9 +18,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBackIosNew
-import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
@@ -47,6 +44,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.androidpoet.materialnotes.di.LocalAppGraph
+import com.androidpoet.materialnotes.ui.icons.AppIcons
 import com.androidpoet.materialnotes.ui.rememberViewModel
 import com.androidpoet.materialnotes.ui.theme.NoteInk
 import com.androidpoet.materialnotes.ui.theme.NoteInkMuted
@@ -73,7 +71,7 @@ fun AddNoteScreen(onBack: () -> Unit) {
                 title = { Text("New note", fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Rounded.ArrowBackIosNew, contentDescription = "Back")
+                        Icon(AppIcons.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
@@ -92,7 +90,7 @@ fun AddNoteScreen(onBack: () -> Unit) {
                         },
                         modifier = Modifier.padding(end = 8.dp),
                     ) {
-                        Icon(Icons.Rounded.Check, contentDescription = "Save")
+                        Icon(AppIcons.Check, contentDescription = "Save")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(

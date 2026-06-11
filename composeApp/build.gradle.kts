@@ -7,8 +7,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.room)
+    alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.sqldelight)
     alias(libs.plugins.metro)
 }
 
@@ -23,7 +23,6 @@ kotlin {
     jvm("desktop")
 
     listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -40,36 +39,42 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.kotlinx.coroutines.android)
+            implementation(libs.sqldelight.android.driver)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
-            implementation(compose.materialIconsExtended)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
 
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.serialization.json)
 
-            implementation(libs.room.runtime)
-            implementation(libs.sqlite.bundled)
+            implementation(libs.sqldelight.runtime)
+            implementation(libs.sqldelight.coroutines.extensions)
 
             implementation(libs.lifecycle.viewmodel)
             implementation(libs.lifecycle.viewmodel.compose)
             implementation(libs.lifecycle.runtime.compose)
+            implementation(libs.lifecycle.viewmodel.navigation3)
 
-            implementation(libs.navigation.compose)
+            implementation(libs.nav3.ui)
 
             implementation(libs.napier)
         }
         commonTest.dependencies {
             implementation(kotlin("test"))
         }
+        iosMain.dependencies {
+            implementation(libs.sqldelight.native.driver)
+        }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+            implementation(libs.sqldelight.sqlite.driver)
         }
     }
 }
@@ -102,16 +107,15 @@ android {
 }
 
 dependencies {
-    add("kspAndroid", libs.room.compiler)
-    add("kspDesktop", libs.room.compiler)
-    add("kspIosX64", libs.room.compiler)
-    add("kspIosArm64", libs.room.compiler)
-    add("kspIosSimulatorArm64", libs.room.compiler)
     debugImplementation(compose.uiTooling)
 }
 
-room {
-    schemaDirectory("$projectDir/schemas")
+sqldelight {
+    databases {
+        create("NotesDatabase") {
+            packageName.set("com.androidpoet.materialnotes.db")
+        }
+    }
 }
 
 compose.desktop {

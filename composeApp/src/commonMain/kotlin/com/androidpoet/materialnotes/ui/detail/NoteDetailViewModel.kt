@@ -6,13 +6,13 @@ import com.androidpoet.materialnotes.data.MainRepository
 import com.androidpoet.materialnotes.data.Note
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-@Inject
+@AssistedInject
 class NoteDetailViewModel(
     @Assisted private val noteId: Int,
     private val mainRepository: MainRepository,

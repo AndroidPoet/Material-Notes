@@ -9,9 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBackIosNew
-import androidx.compose.material.icons.rounded.DeleteOutline
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.androidpoet.materialnotes.di.LocalAppGraph
 import com.androidpoet.materialnotes.navigation.sharedNoteBounds
+import com.androidpoet.materialnotes.ui.icons.AppIcons
 import com.androidpoet.materialnotes.ui.rememberViewModel
 import com.androidpoet.materialnotes.ui.theme.NoteInk
 
@@ -59,7 +57,7 @@ fun NoteDetailScreen(
                 title = {},
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Rounded.ArrowBackIosNew, contentDescription = "Back", tint = NoteInk)
+                        Icon(AppIcons.ArrowBack, contentDescription = "Back", tint = NoteInk)
                     }
                 },
                 actions = {
@@ -67,7 +65,7 @@ fun NoteDetailScreen(
                         note?.let { viewModel.delete(it) }
                         onBack()
                     }) {
-                        Icon(Icons.Rounded.DeleteOutline, contentDescription = "Delete", tint = NoteInk)
+                        Icon(AppIcons.Delete, contentDescription = "Delete", tint = NoteInk)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),

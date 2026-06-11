@@ -1,14 +1,10 @@
 package com.androidpoet.materialnotes.data
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity
+/** Plain multiplatform domain model. Persistence is handled by SQLDelight (see `Note.sq`). */
 data class Note(
-    @PrimaryKey(autoGenerate = true)
-    var id: Int = 0,
-    var title: String = "",
-    var date: String = "",
-    var backround: Int = 0,
-    var content: String = "",
+    val id: Int = 0,
+    val title: String = "",
+    val date: String = "",
+    val backround: Int = 0,
+    val content: String = "",
 )

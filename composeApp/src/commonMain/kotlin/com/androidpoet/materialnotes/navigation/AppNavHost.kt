@@ -6,57 +6,61 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
 import com.androidpoet.materialnotes.ui.addnote.AddNoteScreen
 import com.androidpoet.materialnotes.ui.detail.NoteDetailScreen
 import com.androidpoet.materialnotes.ui.home.HomeScreen
+import kotlinx.serialization.Serializable
 
-object Routes {
-    const val HOME = "home"
-    const val ADD_NOTE = "addnote"
-    const val DETAIL = "detail"
-    const val ARG_NOTE_ID = "noteId"
-    const val DETAIL_ROUTE = "$DETAIL/{$ARG_NOTE_ID}"
-    fun detail(noteId: Int) = "$DETAIL/$noteId"
-}
+/** Navigation 3 destination keys. Each screen is reachable by adding its key to the back stack. */
+@Serializable
+data object HomeRoute : NavKey
+
+@Serializable
+data object AddNoteRoute : NavKey
+
+@Serializable
+data class DetailRoute(val noteId: Int) : NavKey
 
 @Composable
 fun AppNavHost() {
-    val navController = rememberNavController()
+    val backStack = remember { mutableStateListOf<NavKey>(HomeRoute) }
 
     SharedTransitionLayout {
         CompositionLocalProvider(LocalSharedTransitionScope provides this) {
-            NavHost(navController = navController, startDestination = Routes.HOME) {
-                composable(Routes.HOME) {
-                    CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
+            NavDisplay(
+                backStack = backStack,
+                onBack = { backStack.removeLastOrNull() },
+                // SaveableStateHolder preserves each entry's UI state; ViewModelStore scopes a fresh
+                // ViewModelStoreOwner per entry so `viewModel()` returns an entry-scoped instance.
+                entryDecorators = listOf(
+                    rememberSaveableStateHolderNavEntryDecorator(),
+                    rememberViewModelStoreNavEntryDecorator(),
+                ),
+                entryProvider = entryProvider {
+                    entry<HomeRoute> {
                         HomeScreen(
-                            onAddNote = { navController.navigate(Routes.ADD_NOTE) },
-                            onNoteClick = { navController.navigate(Routes.detail(it.id)) },
+                            onAddNote = { backStack.add(AddNoteRoute) },
+                            onNoteClick = { backStack.add(DetailRoute(it.id)) },
                         )
                     }
-                }
-                composable(Routes.ADD_NOTE) {
-                    CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
-                        AddNoteScreen(onBack = { navController.popBackStack() })
+                    entry<AddNoteRoute> {
+                        AddNoteScreen(onBack = { backStack.removeLastOrNull() })
                     }
-                }
-                composable(
-                    route = Routes.DETAIL_ROUTE,
-                    arguments = listOf(navArgument(Routes.ARG_NOTE_ID) { type = NavType.IntType }),
-                ) { backStackEntry ->
-                    val noteId = backStackEntry.arguments?.getInt(Routes.ARG_NOTE_ID) ?: 0
-                    CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
+                    entry<DetailRoute> { key ->
                         NoteDetailScreen(
-                            noteId = noteId,
-                            onBack = { navController.popBackStack() },
+                            noteId = key.noteId,
+                            onBack = { backStack.removeLastOrNull() },
                         )
                     }
-                }
-            }
+                },
+            )
         }
     }
 }

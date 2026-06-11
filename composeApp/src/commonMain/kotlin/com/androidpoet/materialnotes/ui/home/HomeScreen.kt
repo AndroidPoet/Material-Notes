@@ -15,10 +15,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Lightbulb
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.androidpoet.materialnotes.data.Note
 import com.androidpoet.materialnotes.di.LocalAppGraph
 import com.androidpoet.materialnotes.navigation.sharedNoteBounds
+import com.androidpoet.materialnotes.ui.icons.AppIcons
 import com.androidpoet.materialnotes.ui.rememberViewModel
 import com.androidpoet.materialnotes.ui.theme.NoteInk
 import com.androidpoet.materialnotes.ui.theme.NoteInkMuted
@@ -56,7 +53,7 @@ fun HomeScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 text = { Text("New note", fontWeight = FontWeight.SemiBold) },
-                icon = { Icon(Icons.Rounded.Add, contentDescription = null) },
+                icon = { Icon(AppIcons.Add, contentDescription = null) },
                 onClick = onAddNote,
             )
         },
@@ -150,7 +147,7 @@ private fun NoteCard(
                     color = NoteInk.copy(alpha = 0.55f),
                 )
                 Icon(
-                    imageVector = Icons.Rounded.Close,
+                    imageVector = AppIcons.Close,
                     contentDescription = "Delete note",
                     tint = NoteInk.copy(alpha = 0.55f),
                     modifier = Modifier
@@ -176,7 +173,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
-                        imageVector = Icons.Outlined.Lightbulb,
+                        imageVector = AppIcons.Edit,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier.size(44.dp),

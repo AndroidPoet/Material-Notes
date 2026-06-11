@@ -1,15 +1,13 @@
 package com.androidpoet.materialnotes.di
 
 import android.content.Context
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import com.androidpoet.materialnotes.data.AppDatabase
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.android.AndroidSqliteDriver
+import com.androidpoet.materialnotes.db.NotesDatabase
 
-fun androidDatabaseBuilder(context: Context): RoomDatabase.Builder<AppDatabase> {
-    val appContext = context.applicationContext
-    val dbFile = appContext.getDatabasePath("Notes.db")
-    return Room.databaseBuilder<AppDatabase>(
-        context = appContext,
-        name = dbFile.absolutePath,
+fun androidDatabaseDriver(context: Context): SqlDriver =
+    AndroidSqliteDriver(
+        schema = NotesDatabase.Schema,
+        context = context.applicationContext,
+        name = "notes.db",
     )
-}

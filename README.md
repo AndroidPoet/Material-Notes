@@ -8,10 +8,11 @@
   <img alt="Compose Multiplatform" src="https://img.shields.io/badge/Compose%20Multiplatform-1.10.3-blue.svg"/>
   <img alt="Navigation 3" src="https://img.shields.io/badge/Navigation-3-blue.svg"/>
   <img alt="DI" src="https://img.shields.io/badge/DI-Metro-orange.svg"/>
+  <img alt="Sync" src="https://img.shields.io/badge/Sync-Supabase-3ecf8e.svg"/>
 </p>
 
 <p align="center">
-📝 Material Notes is a clean, Material 3 note-taking app built with Compose Multiplatform — running on Android, iOS, and Desktop from a single shared, multi-module codebase, with Navigation 3, SQLDelight, Metro DI, Coroutines, Flow, and a card-to-detail shared-element transition based on MVVM architecture.
+📝 Material Notes is a clean, Material 3 note-taking app built with Compose Multiplatform — running on Android, iOS, and Desktop from a single shared, multi-module codebase, with Navigation 3, SQLDelight, Metro DI, Coroutines, Flow, optional cloud sync via a Supabase KMP SDK, and a card-to-detail shared-element transition based on MVVM architecture.
 </p>
 
 <p align="center">
@@ -38,6 +39,7 @@
   - Lifecycle & ViewModel — `org.jetbrains.androidx.lifecycle` (multiplatform).
   - [Navigation 3](https://developer.android.com/guide/navigation/navigation-3) — `NavDisplay` + `entryProvider` with type-safe `NavKey` routes and entry-scoped ViewModels (`org.jetbrains.androidx.navigation3`).
   - [SQLDelight](https://github.com/cashapp/sqldelight) — typesafe SQL with platform drivers (Android / native / JDBC).
+- [Supabase KMP SDK](https://github.com/AndroidPoet/supabase-kmp) — `io.github.androidpoet:supabase-*` — optional two-way cloud note sync (push + pull), offline-first.
 - [Metro](https://github.com/ZacSweers/metro) — compile-time dependency injection (a Kotlin compiler plugin), wired across modules.
 - Architecture:
   - MVVM Architecture (View → ViewModel → Repository → SQLDelight queries).
@@ -68,10 +70,31 @@ screens) creates each entry-scoped ViewModel and passes it down. Each platform s
 `SqlDriver` (`:core:data/.../DatabaseDriver.*.kt`) into `buildAppGraph(driver, ioDispatcher)`. Because Metro
 validates the graph at compile time, a wiring mistake fails the build instead of crashing at runtime.
 
+### Cloud sync (Supabase)
+
+Notes live locally in SQLDelight and the app is fully usable offline. The **Sync** button in the home
+header does an explicit two-way sync through [AndroidPoet's Supabase KMP SDK](https://github.com/AndroidPoet/supabase-kmp):
+it upserts every local note up to a Supabase `notes` table, then pulls the table back down — so a note
+saved on any device converges everywhere.
+
+To enable it:
+
+1. Create a Supabase project and run [`supabase/schema.sql`](supabase/schema.sql) in its SQL Editor.
+2. Put your project URL and **anon** key in `core/data/src/commonMain/kotlin/com/androidpoet/materialnotes/data/sync/SupabaseConfig.kt`.
+
+Until those are set, `SupabaseConfig.isConfigured` is `false` and the Sync button simply reports that
+cloud sync isn't configured. The app ships the **anon** key only — the `service_role` key bypasses Row
+Level Security and must never be embedded in a client. The default schema is one shared notebook;
+`supabase/schema.sql` documents the per-user (auth + RLS) upgrade path.
+
+> [!NOTE]
+> The sync code lives in `:core:data` under `.../data/sync/` (`SupabaseConfig`, `RemoteNote`,
+> `NoteSyncService`) and is wired into `NotesViewModel` via Metro.
+
 ### Version matrix
 
 Kotlin 2.3.10 · Compose Multiplatform 1.10.3 · Navigation 3 1.1.0 · AGP 8.11.1 · SQLDelight 2.3.2 ·
-Metro 1.1.0 · Lifecycle (JB) 2.10.0 · Gradle 8.14 · JDK 21 (see `gradle/libs.versions.toml`).
+Metro 1.1.0 · Supabase KMP 0.3.5 · Lifecycle (JB) 2.10.0 · Gradle 8.14 · JDK 21 (see `gradle/libs.versions.toml`).
 
 > [!NOTE]
 > **Toolchain notes.** Metro 1.1.0's Gradle plugin pins the Kotlin Gradle plugin to 2.3.x and requires

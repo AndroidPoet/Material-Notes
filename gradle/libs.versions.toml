@@ -10,6 +10,7 @@ metro = "1.1.0"
 lifecycle = "2.10.0"
 nav3 = "1.1.0"
 serialization = "1.9.0"
+supabase = "0.3.5"
 
 android-compileSdk = "36"
 android-minSdk = "24"
@@ -36,6 +37,10 @@ lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecyc
 lifecycle-viewmodel-navigation3 = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycle" }
 
 nav3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "nav3" }
+
+# Supabase KMP SDK (https://github.com/AndroidPoet/supabase-kmp) — cloud note sync.
+supabase-client = { module = "io.github.androidpoet:supabase-client", version.ref = "supabase" }
+supabase-database = { module = "io.github.androidpoet:supabase-database", version.ref = "supabase" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

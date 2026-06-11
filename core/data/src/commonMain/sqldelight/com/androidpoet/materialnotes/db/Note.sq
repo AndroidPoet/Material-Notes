@@ -19,5 +19,11 @@ VALUES (?, ?, ?, ?);
 updateNote:
 UPDATE Note SET title = ?, date = ?, backround = ?, content = ? WHERE id = ?;
 
+-- Insert-or-replace by primary key. Used when pulling notes down from Supabase so a
+-- remote note keeps its server-assigned id instead of getting a fresh local one.
+upsertNote:
+INSERT OR REPLACE INTO Note(id, title, date, backround, content)
+VALUES (?, ?, ?, ?, ?);
+
 deleteById:
 DELETE FROM Note WHERE id = ?;

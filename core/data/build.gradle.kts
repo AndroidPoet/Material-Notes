@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.sqldelight)
+    alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.metro)
 }
 
@@ -12,7 +13,9 @@ kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            // JVM 17 because the Supabase SDK's Android artifact ships JVM 17 inline functions
+            // (selectTyped / upsertTyped) that NoteSyncService inlines.
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
 
@@ -24,8 +27,13 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.serialization.json)
             implementation(libs.sqldelight.runtime)
             implementation(libs.sqldelight.coroutines.extensions)
+
+            // AndroidPoet's own Supabase KMP SDK — cloud note sync.
+            implementation(libs.supabase.client)
+            implementation(libs.supabase.database)
         }
         androidMain.dependencies {
             implementation(libs.sqldelight.android.driver)
@@ -47,8 +55,8 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 

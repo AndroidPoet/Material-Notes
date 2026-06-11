@@ -39,6 +39,16 @@ class MainRepository(
     suspend fun updateNote(note: Note) = withContext(ioContext) {
         queries.updateNote(note.title, note.date, note.backround.toLong(), note.content, note.id.toLong())
     }
+
+    /** One-shot snapshot of every note — used by the Supabase sync to push the local store up. */
+    suspend fun getAllNotesOnce(): List<Note> = withContext(ioContext) {
+        queries.selectAll().executeAsList().map { it.toDomain() }
+    }
+
+    /** Insert-or-replace by id — used when pulling notes down from Supabase. */
+    suspend fun upsertNote(note: Note) = withContext(ioContext) {
+        queries.upsertNote(note.id.toLong(), note.title, note.date, note.backround.toLong(), note.content)
+    }
 }
 
 private fun NoteRow.toDomain() = Note(

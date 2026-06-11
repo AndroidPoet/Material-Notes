@@ -1,0 +1,28 @@
+package com.androidpoet.materialnotes.util
+
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+
+private val MONTHS = listOf(
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+)
+
+/** Formats "dd-MMM-yy hh:mm aa", e.g. "11-Jun-26 09:05 PM" — matches the original SimpleDateFormat. */
+fun currentDateString(): String {
+    val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+    val day = now.dayOfMonth.toString().padStart(2, '0')
+    val month = MONTHS[now.monthNumber - 1]
+    val year = (now.year % 100).toString().padStart(2, '0')
+    val hour24 = now.hour
+    val hour12 = when {
+        hour24 == 0 -> 12
+        hour24 > 12 -> hour24 - 12
+        else -> hour24
+    }
+    val hour = hour12.toString().padStart(2, '0')
+    val minute = now.minute.toString().padStart(2, '0')
+    val amPm = if (hour24 < 12) "AM" else "PM"
+    return "$day-$month-$year $hour:$minute $amPm"
+}

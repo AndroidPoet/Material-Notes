@@ -1,5 +1,6 @@
 package com.androidpoet.materialnotes.ui.auth
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -51,38 +54,51 @@ fun AuthScreen(viewModel: AuthViewModel) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val signUp = state.mode == AuthMode.SignUp
 
+    // Soft diagonal wash behind the card — a calm indigo/lavender tint over the canvas.
+    val backdrop = Brush.linearGradient(
+        listOf(Color(0xFFEAECFF), Color(0xFFF6F6FB), Color(0xFFF1ECFF)),
+    )
+
     Scaffold(containerColor = MaterialTheme.colorScheme.background) { innerPadding ->
         Box(
-            modifier = Modifier.fillMaxSize().padding(innerPadding),
+            modifier = Modifier.fillMaxSize().padding(innerPadding).background(backdrop),
             contentAlignment = Alignment.Center,
         ) {
-            Column(
+            Surface(
+                shape = RoundedCornerShape(28.dp),
+                color = MaterialTheme.colorScheme.surface,
+                shadowElevation = 18.dp,
+                tonalElevation = 0.dp,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .widthIn(max = 440.dp)
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 28.dp, vertical = 32.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                    .widthIn(max = 420.dp)
+                    .padding(24.dp),
             ) {
-                Brand()
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 28.dp, vertical = 36.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Brand()
 
-                Spacer(Modifier.height(28.dp))
-                Text(
-                    text = if (signUp) "Create your account" else "Welcome back",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground,
-                )
-                Spacer(Modifier.height(6.dp))
-                Text(
-                    text = "Sign in to sync your notes across every device.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                )
+                    Spacer(Modifier.height(28.dp))
+                    Text(
+                        text = if (signUp) "Create your account" else "Welcome back",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        text = "Sign in to sync your notes across every device.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                    )
 
-                Spacer(Modifier.height(28.dp))
-                OutlinedTextField(
+                    Spacer(Modifier.height(28.dp))
+                    OutlinedTextField(
                     value = state.email,
                     onValueChange = viewModel::onEmailChange,
                     label = { Text("Email") },
@@ -177,27 +193,30 @@ fun AuthScreen(viewModel: AuthViewModel) {
                     }
                 }
             }
+            }
         }
     }
 }
 
 @Composable
 private fun Brand() {
-    Surface(
-        shape = RoundedCornerShape(24.dp),
-        color = MaterialTheme.colorScheme.primaryContainer,
-        modifier = Modifier.size(72.dp),
+    Box(
+        modifier = Modifier
+            .size(76.dp)
+            .clip(RoundedCornerShape(24.dp))
+            .background(
+                Brush.linearGradient(listOf(Color(0xFF5A6BE0), Color(0xFF8E7BF0))),
+            ),
+        contentAlignment = Alignment.Center,
     ) {
-        Box(contentAlignment = Alignment.Center) {
-            Icon(
-                imageVector = AppIcons.Edit,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                modifier = Modifier.size(34.dp),
-            )
-        }
+        Icon(
+            imageVector = AppIcons.Edit,
+            contentDescription = null,
+            tint = Color.White,
+            modifier = Modifier.size(36.dp),
+        )
     }
-    Spacer(Modifier.height(16.dp))
+    Spacer(Modifier.height(18.dp))
     Text(
         text = "Material Notes",
         style = MaterialTheme.typography.titleLarge,

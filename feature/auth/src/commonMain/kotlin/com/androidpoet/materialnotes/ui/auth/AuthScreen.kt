@@ -1,5 +1,6 @@
 package com.androidpoet.materialnotes.ui.auth
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -54,21 +55,17 @@ fun AuthScreen(viewModel: AuthViewModel) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val signUp = state.mode == AuthMode.SignUp
 
-    // Soft diagonal wash behind the card — a calm indigo/lavender tint over the canvas.
-    val backdrop = Brush.linearGradient(
-        listOf(Color(0xFFEAECFF), Color(0xFFF6F6FB), Color(0xFFF1ECFF)),
-    )
-
     Scaffold(containerColor = MaterialTheme.colorScheme.background) { innerPadding ->
         Box(
-            modifier = Modifier.fillMaxSize().padding(innerPadding).background(backdrop),
+            modifier = Modifier.fillMaxSize().padding(innerPadding),
             contentAlignment = Alignment.Center,
         ) {
             Surface(
                 shape = RoundedCornerShape(28.dp),
                 color = MaterialTheme.colorScheme.surface,
-                shadowElevation = 18.dp,
+                shadowElevation = 0.dp,
                 tonalElevation = 0.dp,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                 modifier = Modifier
                     .fillMaxWidth()
                     .widthIn(max = 420.dp)

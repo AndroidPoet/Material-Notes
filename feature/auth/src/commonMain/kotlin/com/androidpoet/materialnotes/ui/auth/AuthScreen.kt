@@ -1,6 +1,5 @@
 package com.androidpoet.materialnotes.ui.auth
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,7 +27,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -60,24 +58,15 @@ fun AuthScreen(viewModel: AuthViewModel) {
             modifier = Modifier.fillMaxSize().padding(innerPadding),
             contentAlignment = Alignment.Center,
         ) {
-            Surface(
-                shape = RoundedCornerShape(28.dp),
-                color = MaterialTheme.colorScheme.surface,
-                shadowElevation = 0.dp,
-                tonalElevation = 0.dp,
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .widthIn(max = 420.dp)
-                    .padding(24.dp),
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 28.dp, vertical = 36.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Column(
-                    modifier = Modifier
-                        .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 28.dp, vertical = 36.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Brand()
+                Brand()
 
                     Spacer(Modifier.height(28.dp))
                     Text(
@@ -189,7 +178,6 @@ fun AuthScreen(viewModel: AuthViewModel) {
                         )
                     }
                 }
-            }
             }
         }
     }

@@ -1,29 +1,32 @@
 CREATE TABLE Note (
-    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    id TEXT NOT NULL PRIMARY KEY,
     title TEXT NOT NULL DEFAULT '',
     date TEXT NOT NULL DEFAULT '',
     backround INTEGER NOT NULL DEFAULT 0,
-    content TEXT NOT NULL DEFAULT ''
+    content TEXT NOT NULL DEFAULT '',
+    createdAt INTEGER NOT NULL DEFAULT 0
 );
 
+-- Order by createdAt (epoch millis) for newest-first. The id is a random UUID with no
+-- chronology, so we can no longer rely on AUTOINCREMENT ordering as before.
 selectAll:
-SELECT * FROM Note ORDER BY id DESC;
+SELECT * FROM Note ORDER BY createdAt DESC;
 
 selectById:
 SELECT * FROM Note WHERE id = ?;
 
 insertNote:
-INSERT INTO Note(title, date, backround, content)
-VALUES (?, ?, ?, ?);
+INSERT INTO Note(id, title, date, backround, content, createdAt)
+VALUES (?, ?, ?, ?, ?, ?);
 
 updateNote:
 UPDATE Note SET title = ?, date = ?, backround = ?, content = ? WHERE id = ?;
 
 -- Insert-or-replace by primary key. Used when pulling notes down from Supabase so a
--- remote note keeps its server-assigned id instead of getting a fresh local one.
+-- remote note keeps its client-assigned UUID instead of getting a fresh local one.
 upsertNote:
-INSERT OR REPLACE INTO Note(id, title, date, backround, content)
-VALUES (?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO Note(id, title, date, backround, content, createdAt)
+VALUES (?, ?, ?, ?, ?, ?);
 
 deleteById:
 DELETE FROM Note WHERE id = ?;

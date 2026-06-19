@@ -1,8 +1,10 @@
 package com.androidpoet.materialnotes.di
 
 import app.cash.sqldelight.db.SqlDriver
+import com.androidpoet.materialnotes.data.auth.SessionStore
 import com.androidpoet.materialnotes.db.NotesDatabase
 import com.androidpoet.materialnotes.ui.addnote.AddNoteViewModel
+import com.androidpoet.materialnotes.ui.auth.AuthViewModel
 import com.androidpoet.materialnotes.ui.detail.NoteDetailViewModel
 import com.androidpoet.materialnotes.ui.home.NotesViewModel
 import dev.zacsweers.metro.AppScope
@@ -19,9 +21,13 @@ import kotlin.coroutines.CoroutineContext
 @DependencyGraph(AppScope::class)
 interface AppGraph {
 
+    val authViewModel: AuthViewModel
     val notesViewModel: NotesViewModel
     val addNoteViewModel: AddNoteViewModel
     val noteDetailViewModelFactory: NoteDetailViewModel.Factory
+
+    /** Single source of truth for who is signed in; the nav gate observes its session flow. */
+    val sessionStore: SessionStore
 
     @Provides
     @SingleIn(AppScope::class)

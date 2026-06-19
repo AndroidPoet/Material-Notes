@@ -52,6 +52,7 @@ fun HomeScreen(
 ) {
     val notes by viewModel.notes.collectAsStateWithLifecycle()
     val syncState by viewModel.syncState.collectAsStateWithLifecycle()
+    val userEmail by viewModel.userEmail.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(syncState) {
@@ -80,8 +81,10 @@ fun HomeScreen(
         Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
             Header(
                 noteCount = notes.size,
+                userEmail = userEmail,
                 syncing = syncState is SyncUiState.Syncing,
                 onSync = viewModel::sync,
+                onSignOut = viewModel::signOut,
             )
 
             if (notes.isEmpty()) {
@@ -110,8 +113,10 @@ fun HomeScreen(
 @Composable
 private fun Header(
     noteCount: Int,
+    userEmail: String?,
     syncing: Boolean,
     onSync: () -> Unit,
+    onSignOut: () -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(start = 24.dp, end = 16.dp, top = 24.dp, bottom = 12.dp),
@@ -125,7 +130,7 @@ private fun Header(
                 color = MaterialTheme.colorScheme.onBackground,
             )
             Text(
-                text = when (noteCount) {
+                text = userEmail ?: when (noteCount) {
                     0 -> "Capture your ideas"
                     1 -> "1 note"
                     else -> "$noteCount notes"
@@ -144,6 +149,10 @@ private fun Header(
             } else {
                 Icon(AppIcons.CloudSync, contentDescription = "Sync notes to cloud")
             }
+        }
+        Spacer(Modifier.size(8.dp))
+        FilledTonalIconButton(onClick = onSignOut, enabled = !syncing) {
+            Icon(AppIcons.Logout, contentDescription = "Sign out")
         }
     }
 }

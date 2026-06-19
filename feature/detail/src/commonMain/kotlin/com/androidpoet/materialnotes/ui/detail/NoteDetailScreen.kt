@@ -31,7 +31,7 @@ import com.androidpoet.materialnotes.designsystem.NoteInk
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteDetailScreen(
-    noteId: Int,
+    noteId: String,
     viewModel: NoteDetailViewModel,
     onBack: () -> Unit,
 ) {

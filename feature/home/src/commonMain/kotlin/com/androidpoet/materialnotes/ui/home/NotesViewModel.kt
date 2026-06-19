@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.androidpoet.materialnotes.data.MainRepository
 import com.androidpoet.materialnotes.data.Note
+import com.androidpoet.materialnotes.data.auth.AuthService
+import com.androidpoet.materialnotes.data.auth.SessionStore
 import com.androidpoet.materialnotes.data.sync.NoteSyncService
 import com.androidpoet.materialnotes.data.sync.SyncResult
 import dev.zacsweers.metro.Inject
@@ -11,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -26,6 +29,8 @@ sealed interface SyncUiState {
 class NotesViewModel(
     private val mainRepository: MainRepository,
     private val noteSyncService: NoteSyncService,
+    private val authService: AuthService,
+    private val sessionStore: SessionStore,
 ) : ViewModel() {
 
     val notes: StateFlow<List<Note>> = mainRepository.getAllNotes
@@ -33,6 +38,15 @@ class NotesViewModel(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = emptyList(),
+        )
+
+    /** Email of the signed-in user, shown in the header. */
+    val userEmail: StateFlow<String?> = sessionStore.session
+        .map { it?.email }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = sessionStore.session.value?.email,
         )
 
     private val _syncState = MutableStateFlow<SyncUiState>(SyncUiState.Idle)
@@ -61,5 +75,12 @@ class NotesViewModel(
 
     fun clearSyncStatus() {
         _syncState.value = SyncUiState.Idle
+    }
+
+    /** Signs out — clears the session, which returns the app to the login screen via the nav gate. */
+    fun signOut() {
+        viewModelScope.launch {
+            authService.signOut()
+        }
     }
 }

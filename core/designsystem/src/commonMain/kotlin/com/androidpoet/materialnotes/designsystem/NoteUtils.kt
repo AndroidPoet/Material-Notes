@@ -28,3 +28,7 @@ fun currentDateString(): String {
     val amPm = if (hour24 < 12) "AM" else "PM"
     return "$day-$month-$year $hour:$minute $amPm"
 }
+
+/** Epoch millis now — stored on a note for stable, sortable, cross-device newest-first ordering. */
+@OptIn(ExperimentalTime::class)
+fun currentEpochMillis(): Long = Clock.System.now().toEpochMilliseconds()

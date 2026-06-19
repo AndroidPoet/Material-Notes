@@ -1,6 +1,7 @@
 package com.androidpoet.materialnotes.data.sync
 
 import com.androidpoet.materialnotes.data.Note
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
@@ -9,11 +10,12 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class RemoteNote(
-    val id: Int,
+    val id: String,
     val title: String,
     val date: String,
     val backround: Int,
     val content: String,
+    @SerialName("created_at") val createdAt: Long,
 )
 
 fun Note.toRemote(): RemoteNote = RemoteNote(
@@ -22,6 +24,7 @@ fun Note.toRemote(): RemoteNote = RemoteNote(
     date = date,
     backround = backround,
     content = content,
+    createdAt = createdAt,
 )
 
 fun RemoteNote.toDomain(): Note = Note(
@@ -30,4 +33,5 @@ fun RemoteNote.toDomain(): Note = Note(
     date = date,
     backround = backround,
     content = content,
+    createdAt = createdAt,
 )

@@ -25,19 +25,19 @@ class MainRepository(
     val getAllNotes: Flow<List<Note>> =
         queries.selectAll().asFlow().mapToList(ioContext).map { rows -> rows.map { it.toDomain() } }
 
-    fun getNote(id: Int): Flow<Note?> =
-        queries.selectById(id.toLong()).asFlow().mapToOneOrNull(ioContext).map { it?.toDomain() }
+    fun getNote(id: String): Flow<Note?> =
+        queries.selectById(id).asFlow().mapToOneOrNull(ioContext).map { it?.toDomain() }
 
     suspend fun addNote(note: Note) = withContext(ioContext) {
-        queries.insertNote(note.title, note.date, note.backround.toLong(), note.content)
+        queries.insertNote(note.id, note.title, note.date, note.backround.toLong(), note.content, note.createdAt)
     }
 
     suspend fun deleteNote(note: Note) = withContext(ioContext) {
-        queries.deleteById(note.id.toLong())
+        queries.deleteById(note.id)
     }
 
     suspend fun updateNote(note: Note) = withContext(ioContext) {
-        queries.updateNote(note.title, note.date, note.backround.toLong(), note.content, note.id.toLong())
+        queries.updateNote(note.title, note.date, note.backround.toLong(), note.content, note.id)
     }
 
     /** One-shot snapshot of every note — used by the Supabase sync to push the local store up. */
@@ -47,14 +47,15 @@ class MainRepository(
 
     /** Insert-or-replace by id — used when pulling notes down from Supabase. */
     suspend fun upsertNote(note: Note) = withContext(ioContext) {
-        queries.upsertNote(note.id.toLong(), note.title, note.date, note.backround.toLong(), note.content)
+        queries.upsertNote(note.id, note.title, note.date, note.backround.toLong(), note.content, note.createdAt)
     }
 }
 
 private fun NoteRow.toDomain() = Note(
-    id = id.toInt(),
+    id = id,
     title = title,
     date = date,
     backround = backround.toInt(),
     content = content,
+    createdAt = createdAt,
 )

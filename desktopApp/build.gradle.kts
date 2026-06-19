@@ -13,6 +13,13 @@ kotlin {
     }
 }
 
+// Keep javac on the same target as Kotlin (the daemon runs on JDK 21, so javac would otherwise
+// default to 21 and Gradle would reject the mismatched JVM targets).
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
 dependencies {
     implementation(projects.shared)
     implementation(projects.core.data)

@@ -12,3 +12,6 @@ captures
 *.xcodeproj/project.xcworkspace/xcuserdata
 xcuserdata/
 !gradle-wrapper.jar
+
+# Supabase CLI scratch
+supabase/.temp/

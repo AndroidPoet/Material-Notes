@@ -6,6 +6,8 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -17,6 +19,7 @@ import com.androidpoet.materialnotes.designsystem.LocalSharedTransitionScope
 import com.androidpoet.materialnotes.designsystem.rememberViewModel
 import com.androidpoet.materialnotes.di.LocalAppGraph
 import com.androidpoet.materialnotes.ui.addnote.AddNoteScreen
+import com.androidpoet.materialnotes.ui.auth.AuthScreen
 import com.androidpoet.materialnotes.ui.detail.NoteDetailScreen
 import com.androidpoet.materialnotes.ui.home.HomeScreen
 import kotlinx.serialization.Serializable
@@ -29,12 +32,22 @@ data object HomeRoute : NavKey
 data object AddNoteRoute : NavKey
 
 @Serializable
-data class DetailRoute(val noteId: Int) : NavKey
+data class DetailRoute(val noteId: String) : NavKey
 
 @Composable
 fun AppNavHost() {
     val graph = LocalAppGraph.current
-    val backStack = remember { mutableStateListOf<NavKey>(HomeRoute) }
+    val session by graph.sessionStore.session.collectAsState()
+
+    val current = session
+    if (current == null) {
+        // Signed out: the auth gate. Signing in flips the session and this swaps to the notes app.
+        AuthScreen(viewModel = remember { graph.authViewModel })
+        return
+    }
+
+    // A fresh back stack per signed-in user, so a previous session never leaks its navigation state.
+    val backStack = remember(current.userId) { mutableStateListOf<NavKey>(HomeRoute) }
 
     SharedTransitionLayout {
         CompositionLocalProvider(LocalSharedTransitionScope provides this) {

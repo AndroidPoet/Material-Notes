@@ -14,13 +14,13 @@ import kotlinx.coroutines.launch
 
 @AssistedInject
 class NoteDetailViewModel(
-    @Assisted private val noteId: Int,
+    @Assisted private val noteId: String,
     private val mainRepository: MainRepository,
 ) : ViewModel() {
 
     @AssistedFactory
     fun interface Factory {
-        fun create(noteId: Int): NoteDetailViewModel
+        fun create(noteId: String): NoteDetailViewModel
     }
 
     val note: StateFlow<Note?> = mainRepository.getNote(noteId)

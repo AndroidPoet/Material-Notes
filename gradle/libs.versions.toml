@@ -10,7 +10,7 @@ metro = "1.2.0"
 lifecycle = "2.10.0"
 nav3 = "1.1.0"
 serialization = "1.9.0"
-supabase = "0.6.0"
+supabase = "0.9.1"
 
 android-compileSdk = "36"
 android-minSdk = "24"

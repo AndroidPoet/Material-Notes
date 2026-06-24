@@ -124,6 +124,10 @@ Metro 1.2.0 · Supabase KMP 0.6.0 · Lifecycle (JB) 2.10.0 · Gradle 8.14 · JDK
 > `iosApp/iosApp/Info.plist`. `material-icons-extended` is no longer published for CMP 1.8+, so the few
 > icons used are hand-authored `ImageVector`s.
 
+## Contributing
+
+Contributions are welcome! If you've found a bug, have an idea for an improvement, or want to contribute new features, please open an issue or submit a pull request.
+
 ## Find this repository useful? :heart:
 Support it by joining __[stargazers](https://github.com/AndroidPoet/Material-Notes/stargazers)__ for this repository. :star: <br>
 Also, __[follow me](https://github.com/AndroidPoet)__ on GitHub for my next creations! 🤩
